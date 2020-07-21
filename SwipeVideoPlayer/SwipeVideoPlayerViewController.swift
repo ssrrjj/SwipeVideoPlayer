@@ -19,6 +19,9 @@ class SwipeVideoPlayerViewController: UIViewController {
     var url: URL!
     var videoAspectRatio: CGSize!
     var duration: Double!
+    var chaseTime = CMTime.zero
+    var isSeekInProgress = false
+    
     
     @IBOutlet weak var videoView: UIView!
     
@@ -75,12 +78,13 @@ class SwipeVideoPlayerViewController: UIViewController {
     }
     
     func gyroHandle(_ data: CMGyroData?, _ error: Error?) {
-        let time = CMTimeGetSeconds(self.player.currentTime())
+        let curSecond = CMTimeGetSeconds(self.player.currentTime())
         if let yRotationRate = data?.rotationRate.y{
             if abs(yRotationRate) > self.rotationRateThreshold {
-                let newTime = time - yRotationRate
-                if newTime>=0, newTime < self.duration {
-                    self.player.seek(to: CMTime(seconds: newTime, preferredTimescale: 1000), toleranceBefore: self.tolerance, toleranceAfter: self.tolerance)
+                let newSecond = curSecond - yRotationRate
+                if newSecond>=0, newSecond < self.duration {
+                    let newTime = CMTime(seconds: newSecond, preferredTimescale: 1000)
+                    seekSoomthlyToTime(newChaseTime: newTime)
                 }
             }
         }
@@ -113,15 +117,44 @@ class SwipeVideoPlayerViewController: UIViewController {
             
             if newTime>0, newTime < duration {
                 time = CMTime(seconds: newTime, preferredTimescale: 1000)
-                player.seek(to: time, toleranceBefore: tolerance, toleranceAfter: tolerance)
+                //player.seek(to: time, toleranceBefore: tolerance, toleranceAfter: tolerance)
+                
+                seekSoomthlyToTime(newChaseTime: time)
              }
-            
-            
         }
         
     }
     
+    
+    
+    func seekSoomthlyToTime(newChaseTime: CMTime) {
+        if CMTimeCompare(newChaseTime, chaseTime) != 0 {
+            chaseTime = newChaseTime
+            if !isSeekInProgress {
+                trySeekToChaseTime()
+            }
+        }
+    }
+    
+    func trySeekToChaseTime() {
+        guard player?.status == .readyToPlay else {return}
+        actuallySeekToTime()
+    }
+    
+    func actuallySeekToTime() {
+        isSeekInProgress = true
+        let seekTimeInProgress = chaseTime
+        player.seek(to: seekTimeInProgress, toleranceBefore: tolerance, toleranceAfter: tolerance) { (isFinished:Bool) in
+            if CMTimeCompare(seekTimeInProgress, self.chaseTime) == 0 {
+                self.isSeekInProgress = false
+            }
+            else {
+                self.trySeekToChaseTime()
+            }
+        }
+    }
+    
     // Constants
-    let tolerance = CMTime(seconds: 0.01, preferredTimescale: 1000)
+    let tolerance = CMTime(seconds: 0.0, preferredTimescale: 1000)
     let rotationRateThreshold = 0.03
 }
