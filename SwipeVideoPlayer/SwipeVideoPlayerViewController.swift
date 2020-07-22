@@ -19,6 +19,7 @@ class SwipeVideoPlayerViewController: UIViewController {
     var url: URL!
     var videoAspectRatio: CGSize!
     var duration: Double!
+    var currentTime: Float64!
     var chaseTime = CMTime.zero
     var isSeekInProgress = false
     
@@ -26,7 +27,9 @@ class SwipeVideoPlayerViewController: UIViewController {
     @IBOutlet weak var videoView: UIView!
     
     
-    
+    /// Return the resolution of the video.
+    ///
+    /// Use this function to display the video adaptively in avplayerlayer
     private func resolutionForLocalVideo(url: URL) -> CGSize? {
         guard let track = AVURLAsset(url: url).tracks(withMediaType: AVMediaType.video).first else { return nil }
        let size = track.naturalSize.applying(track.preferredTransform)
@@ -36,8 +39,6 @@ class SwipeVideoPlayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
-        
         player = AVPlayer(url: url)
         videoAspectRatio = resolutionForLocalVideo(url: url)
         
@@ -48,6 +49,7 @@ class SwipeVideoPlayerViewController: UIViewController {
         videoView.layer.addSublayer(playerLayer)
         addPan()
     }
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
@@ -63,9 +65,16 @@ class SwipeVideoPlayerViewController: UIViewController {
         stopGyro()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        let adaptiveSize = AVMakeRect(aspectRatio: videoAspectRatio, insideRect: videoView.bounds)
+        playerLayer.frame = adaptiveSize
+    }
+    
+    /// Start update gyroscope
     func startGyro() {
         if CMMotionManager.shared.isGyroAvailable {
-            CMMotionManager.shared.gyroUpdateInterval = 0.04
+            CMMotionManager.shared.gyroUpdateInterval = gyroUpdateInterval
             CMMotionManager.shared.startGyroUpdates(to: .main) { (data, error) in
                 self.gyroHandle(data, error)
                 return
@@ -73,6 +82,7 @@ class SwipeVideoPlayerViewController: UIViewController {
         }
     }
     
+    /// Stop update gyroscope
     func stopGyro() {
         CMMotionManager.shared.stopGyroUpdates()
     }
@@ -90,17 +100,13 @@ class SwipeVideoPlayerViewController: UIViewController {
         }
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        let adaptiveSize = AVMakeRect(aspectRatio: videoAspectRatio, insideRect: videoView.bounds)
-        playerLayer.frame = adaptiveSize
-    }
+    
     
     func addPan() {
         let pan = UIPanGestureRecognizer(target: self, action: #selector(reactSwipe))
         videoView.addGestureRecognizer(pan)
     }
-    var currentTime: Float64!
+    
     @objc func reactSwipe(_ recognizer: UIPanGestureRecognizer) {
         let translation = recognizer.translation(in: videoView)
         if recognizer.state == .began {
@@ -126,7 +132,10 @@ class SwipeVideoPlayerViewController: UIViewController {
     }
     
     
-    
+    /// Achieve smooth video scrub
+    ///
+    /// Check isSeekInProgress to avoid calling seek frequently
+    /// - Parameter newChaseTime: target time
     func seekSoomthlyToTime(newChaseTime: CMTime) {
         if CMTimeCompare(newChaseTime, chaseTime) != 0 {
             chaseTime = newChaseTime
@@ -154,7 +163,8 @@ class SwipeVideoPlayerViewController: UIViewController {
         }
     }
     
-    // Constants
+    /// - Constants
     let tolerance = CMTime(seconds: 0.0, preferredTimescale: 1000)
     let rotationRateThreshold = 0.03
+    let gyroUpdateInterval = 0.02
 }
