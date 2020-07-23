@@ -15,6 +15,8 @@
 		6F3500B724BAD43300413DA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F3500B624BAD43300413DA0 /* Assets.xcassets */; };
 		6F3500BA24BAD43300413DA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F3500B824BAD43300413DA0 /* LaunchScreen.storyboard */; };
 		6FDBAF4724BD7F810013F33A /* CMMotionManager+shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDBAF4624BD7F810013F33A /* CMMotionManager+shared.swift */; };
+		D4847DC924CA360800ABE387 /* OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4847DC824CA360800ABE387 /* OpenCV.mm */; };
+		D4847DF524CA38C000ABE387 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4847DF424CA38C000ABE387 /* opencv2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,10 @@
 		6F3500B924BAD43300413DA0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6F3500BB24BAD43300413DA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6FDBAF4624BD7F810013F33A /* CMMotionManager+shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotionManager+shared.swift"; sourceTree = "<group>"; };
+		D4847DC624CA360700ABE387 /* SwipeVideoPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SwipeVideoPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
+		D4847DC724CA360800ABE387 /* OpenCV.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCV.h; sourceTree = "<group>"; };
+		D4847DC824CA360800ABE387 /* OpenCV.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCV.mm; sourceTree = "<group>"; };
+		D4847DF424CA38C000ABE387 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4847DF524CA38C000ABE387 /* opencv2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,8 +51,11 @@
 		6F3500A124BAD43100413DA0 = {
 			isa = PBXGroup;
 			children = (
+				D4847DC724CA360800ABE387 /* OpenCV.h */,
+				D4847DC824CA360800ABE387 /* OpenCV.mm */,
 				6F3500AC24BAD43100413DA0 /* SwipeVideoPlayer */,
 				6F3500AB24BAD43100413DA0 /* Products */,
+				D4847DC624CA360700ABE387 /* SwipeVideoPlayer-Bridging-Header.h */,
 			);
 			sourceTree = "<group>";
 		};
@@ -60,6 +70,7 @@
 		6F3500AC24BAD43100413DA0 /* SwipeVideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				D4847DF424CA38C000ABE387 /* opencv2.framework */,
 				6F3500AD24BAD43100413DA0 /* AppDelegate.swift */,
 				6F3500AF24BAD43100413DA0 /* SceneDelegate.swift */,
 				6F3500B124BAD43100413DA0 /* SwipeVideoPlayerViewController.swift */,
@@ -105,6 +116,7 @@
 				TargetAttributes = {
 					6F3500A924BAD43100413DA0 = {
 						CreatedOnToolsVersion = 11.5;
+						LastSwiftMigration = 1160;
 					};
 				};
 			};
@@ -148,6 +160,7 @@
 				6F3500B224BAD43100413DA0 /* SwipeVideoPlayerViewController.swift in Sources */,
 				6F3500AE24BAD43100413DA0 /* AppDelegate.swift in Sources */,
 				6F3500B024BAD43100413DA0 /* SceneDelegate.swift in Sources */,
+				D4847DC924CA360800ABE387 /* OpenCV.mm in Sources */,
 				6F0BB9C924BB9836002435AE /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -292,8 +305,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W4Z3HVU5N5;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SwipeVideoPlayer",
+				);
 				INFOPLIST_FILE = SwipeVideoPlayer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -301,6 +319,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = eud.ucsd.a53305328.SwipeVideoPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SwipeVideoPlayer-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -310,8 +330,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W4Z3HVU5N5;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SwipeVideoPlayer",
+				);
 				INFOPLIST_FILE = SwipeVideoPlayer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -319,6 +344,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = eud.ucsd.a53305328.SwipeVideoPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SwipeVideoPlayer-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
