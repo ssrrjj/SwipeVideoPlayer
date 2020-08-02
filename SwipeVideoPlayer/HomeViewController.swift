@@ -60,7 +60,10 @@ extension HomeViewController: UIImagePickerControllerDelegate{
         mediaType == (kUTTypeMovie as String),
             let url = info[UIImagePickerController.InfoKey.mediaURL] as? URL
         else { return }
+        //var frames = getAllFrames(url: url)
+        //frames.removeAll()
         dismiss(animated: true) {
+            
             self.performSegue(withIdentifier: "play video", sender: url)
         }
     }

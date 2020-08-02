@@ -70,7 +70,7 @@ class SwipeVideoPlayerViewController: UIViewController {
         let adaptiveSize = AVMakeRect(aspectRatio: videoAspectRatio, insideRect: videoView.bounds)
         playerLayer.frame = adaptiveSize
     }
-    
+    let data = Data()
     /// Start update gyroscope
     func startGyro() {
         if CMMotionManager.shared.isGyroAvailable {
